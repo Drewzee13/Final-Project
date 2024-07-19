@@ -1,0 +1,89 @@
+# Create an empty board
+board = [
+    [" ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " " , " "],
+    [" ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " "]
+]
+
+# Initialize the current player
+current_player = "X"
+
+# Function to check for a win
+def check_win():
+    # Horizontal check
+    for row in range(6):
+        for col in range(4):
+            if board[row][col] == board[row][col+1] == board[row][col+2] == board[row][col+3] == current_player:
+                return True
+    
+    # Vertical check
+    for row in range(3):
+        for col in range(7):
+            if board[row][col] == board[row+1][col] == board[row+2][col] == board[row+3][col] == current_player:
+                return True
+    
+    # Diagonal check (bottom-left to top-right)
+    for row in range(3, 6):
+        for col in range(4):
+            if board[row][col] == board[row-1][col+1] == board[row-2][col+2] == board[row-3][col+3] == current_player:
+                return True
+    
+    # Diagonal check (top-left to bottom-right)
+    for row in range(3):
+        for col in range(4):
+            if board[row][col] == board[row+1][col+1] == board[row+2][col+2] == board[row+3][col+3] == current_player:
+                return True
+    
+    return False
+
+# Main game loop
+while True:
+    # Print the board
+    for row in range(6):
+        print("|" + "|".join(board[row]) + "|")
+        print("-" * 15)
+    print(" 0 1 2 3 4 5 6 ") # Column numbers
+
+    # Get player input
+    while True:
+        try:
+            col = int(input(f"Player {current_player}, choose a column (0-6): "))
+            if 0 <= col <= 6:
+                break
+            else:
+                print("Please enter a number between 0 and 6.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+    # Find the first empty row in the chosen column
+    for row in range(5, -1, -1):
+        if board[row][col] == " ":
+            board[row][col] = current_player
+            break
+    else:
+        print("That column is full. Try again.")
+        continue
+
+    # Check for a win
+    if check_win():
+        # Print the final board state
+        for row in range(6):
+            print("|" + "|".join(board[row]) + "|")
+            print("-" * 15)
+        print(f"Player {current_player} wins!")
+        break # Exit the game loop
+
+    # Check for a tie
+    if all(cell != " " for row in board for cell in row):
+        # Print the final board state
+        for row in range(6):
+            print("|" + "|".join(board[row]) + "|")
+            print("-" * 15)
+        print("It's a tie!")
+        break # Exit the game loop
+
+    # Switch players
+    current_player = "O" if current_player == "X" else "X"
